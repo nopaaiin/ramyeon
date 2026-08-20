@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>麵道 · 一</title>
+<title>麵道 · 0</title>
 <style>
   /* ===== 확정 수치 (27인치 5K 아이맥 기준) =====
      화면 표시영역 : 2560 x 1440 (CSS px)
@@ -54,13 +54,13 @@
   }
 
   #bg-next {
-    background: url('pg2.png') center / cover no-repeat;
+    background: url('pg3.png') center / cover no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
 
   #bg-third {
-    background: url('pg3.png') center / cover no-repeat;
+    background: url('pg2.png') center / cover no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
@@ -123,6 +123,19 @@
 
   #glyph-next {
     visibility: hidden;
+  }
+
+  /* 0페이지: 한자 대신 보이드 안에 표시되는 이미지(태극) */
+  .glyph.is-image img {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 460px;
+    height: 460px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 18px rgba(244,91,168,0.55)) drop-shadow(0 0 44px rgba(244,91,168,0.35));
   }
 
   #glyph-scene.is-rolling .glyph { animation: none; }
@@ -227,40 +240,68 @@
     '四': { ox:  0, oy:  0 },
   };
 
-  function setGlyph(char, elementId = 'glyph') {
+  // 페이지별 보이드 콘텐츠: 0페이지는 한자 대신 태극 이미지
+  const PAGE_CONTENT = {
+    0: { type: 'image', src: 'yinandyang.png' },
+    1: { type: 'text',  char: '一' },
+    2: { type: 'text',  char: '二' },
+    3: { type: 'text',  char: '三' },
+    4: { type: 'text',  char: '四' },
+  };
+
+  function setGlyph(page, elementId = 'glyph') {
     const el = document.getElementById(elementId);
-    el.textContent = char;
-    const { ox = 0, oy = 0 } = OFFSETS[char] ?? {};
-    el.style.setProperty('--ox', ox + 'px');
-    el.style.setProperty('--oy', oy + 'px');
+    const content = PAGE_CONTENT[page];
+
+    if (content.type === 'image') {
+      el.classList.add('is-image');
+      el.textContent = '';
+      el.style.setProperty('--ox', '0px');
+      el.style.setProperty('--oy', '0px');
+      let img = el.querySelector('img');
+      if (!img) {
+        img = document.createElement('img');
+        el.appendChild(img);
+      }
+      img.src = content.src;
+    } else {
+      el.classList.remove('is-image');
+      el.textContent = content.char;
+      const { ox = 0, oy = 0 } = OFFSETS[content.char] ?? {};
+      el.style.setProperty('--ox', ox + 'px');
+      el.style.setProperty('--oy', oy + 'px');
+    }
   }
 
-  // 초기 글자 세팅
-  setGlyph('一');
-  setGlyph('二', 'glyph-next');
+  function titleGlyph(page) {
+    const content = PAGE_CONTENT[page];
+    return content.type === 'text' ? content.char : String(page);
+  }
+
+  // 초기 콘텐츠 세팅: 0페이지(태극)에서 시작
+  setGlyph(0);
+  setGlyph(1, 'glyph-next');
 
   // ── 페이지 전환: 배경 크로스페이드 + 위 방향 글리프 롤 ──
   const stage = document.getElementById('stage');
   const glyphScene = document.getElementById('glyph-scene');
   const glyph = document.getElementById('glyph');
   let isTransitioning = false;
-  let currentPage = 1;
-  let targetPage = 1;
+  let currentPage = 0;
+  let targetPage = 0;
 
   // 클릭 전에 다음 이미지들을 브라우저 캐시에 준비한다.
-  ['./pg2.png', './pg3.png', './pg4.png'].forEach((src) => {
+  ['./pg1.png', './pg2.png', './pg3.png', './pg4.png', './yinandyang.png'].forEach((src) => {
     const preload = new Image();
     preload.src = src;
   });
 
-  const PAGE_GLYPHS = { 1: '一', 2: '二', 3: '三', 4: '四' };
-
   function goToPage(page) {
-    if (isTransitioning || page === currentPage || !PAGE_GLYPHS[page]) return;
+    if (isTransitioning || page === currentPage || !PAGE_CONTENT[page]) return;
 
     isTransitioning = true;
     targetPage = page;
-    setGlyph(PAGE_GLYPHS[page], 'glyph-next');
+    setGlyph(page, 'glyph-next');
     stage.classList.toggle('is-page-2', page === 2);
     stage.classList.toggle('is-page-3', page === 3);
     stage.classList.toggle('is-page-4', page === 4);
@@ -276,6 +317,8 @@
     if (event.code === 'Space') {
       event.preventDefault();
       goToPage(currentPage + 1);
+    } else if (event.code === 'Digit0' || event.code === 'Numpad0') {
+      goToPage(0);
     } else if (event.code === 'Digit1' || event.code === 'Numpad1') {
       goToPage(1);
     } else if (event.code === 'Digit2' || event.code === 'Numpad2') {
@@ -290,11 +333,11 @@
   glyph.addEventListener('animationend', (event) => {
     if (!isTransitioning || event.animationName !== 'glyphOut') return;
 
-    setGlyph(PAGE_GLYPHS[targetPage]);
+    setGlyph(targetPage);
     glyphScene.classList.remove('is-rolling');
     isTransitioning = false;
     currentPage = targetPage;
-    document.title = `麵道 · ${PAGE_GLYPHS[currentPage]}`;
+    document.title = `麵道 · ${titleGlyph(currentPage)}`;
   });
 
   // ── 화면 크기에 맞춰 무대(2560x1440)를 비율 유지하며 꽉 차게 스케일 ──
