@@ -50,23 +50,23 @@
   }
 
   #bg {
-    background: url('pg1.png') center / cover no-repeat;
+    background: url('pg1.png?v=2') center / cover no-repeat;
   }
 
   #bg-next {
-    background: url('pg2.png') center / cover no-repeat;
+    background: url('pg2.png?v=1') center / cover no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
 
   #bg-third {
-    background: url('pg3.png') center / cover no-repeat;
+    background: url('pg3.png?v=1') center / cover no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
 
   #bg-fourth {
-    background: url('pg4.png') center / cover no-repeat;
+    background: url('pg4.png?v=1') center / cover no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
@@ -241,7 +241,7 @@
 
   // 페이지별 보이드 콘텐츠: 0페이지(pg1.png)는 한자 대신 태극 이미지
   const PAGE_CONTENT = {
-    0: { type: 'image', src: 'yinandyang.png' },
+    0: { type: 'image', src: 'yinandyang.png?v=1' },
     1: { type: 'text',  char: '一' },
     2: { type: 'text',  char: '二' },
     3: { type: 'text',  char: '三' },
@@ -289,7 +289,7 @@
   let targetPage = 0;
 
   // 클릭 전에 다음 이미지들을 브라우저 캐시에 준비한다.
-  ['./pg1.png', './pg2.png', './pg3.png', './pg4.png', './yinandyang.png'].forEach((src) => {
+  ['./pg1.png?v=2', './pg2.png?v=1', './pg3.png?v=1', './pg4.png?v=1', './yinandyang.png?v=1'].forEach((src) => {
     const preload = new Image();
     preload.src = src;
   });
