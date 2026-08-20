@@ -301,7 +301,7 @@
   function fit() {
     const sx = window.innerWidth  / 2560;
     const sy = window.innerHeight / 1440;
-    const scale = Math.min(sx, sy);
+    const scale = Math.min(sx, sy) * 0.85; // 실물 책 85% 축소 인쇄에 맞춘 고정 축소
     document.getElementById('stage')
       .style.setProperty('--scale', scale);
   }
