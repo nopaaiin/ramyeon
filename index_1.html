@@ -71,12 +71,12 @@
     transition: opacity 650ms ease-in-out;
   }
 
+  #stage.is-page-1 #bg-next,
   #stage.is-page-2 #bg-next,
+  #stage.is-page-2 #bg-third,
   #stage.is-page-3 #bg-next,
   #stage.is-page-3 #bg-third,
-  #stage.is-page-4 #bg-next,
-  #stage.is-page-4 #bg-third,
-  #stage.is-page-4 #bg-fourth { opacity: 1; }
+  #stage.is-page-3 #bg-fourth { opacity: 1; }
 
   /* 검정 마름모 (실물 책 자리) — 정방형 회전 */
   #void {
@@ -237,16 +237,14 @@
     '一': { ox:  0, oy: 40 },  // ← 실측 후 조정
     '二': { ox:  0, oy: 20 },
     '三': { ox:  0, oy:  0 },
-    '四': { ox:  0, oy:  0 },
   };
 
-  // 페이지별 보이드 콘텐츠: 0페이지는 한자 대신 태극 이미지
+  // 페이지별 보이드 콘텐츠: 0페이지(pg1.png)는 한자 대신 태극 이미지
   const PAGE_CONTENT = {
     0: { type: 'image', src: 'yinandyang.png' },
     1: { type: 'text',  char: '一' },
     2: { type: 'text',  char: '二' },
     3: { type: 'text',  char: '三' },
-    4: { type: 'text',  char: '四' },
   };
 
   function setGlyph(page, elementId = 'glyph') {
@@ -302,9 +300,9 @@
     isTransitioning = true;
     targetPage = page;
     setGlyph(page, 'glyph-next');
+    stage.classList.toggle('is-page-1', page === 1);
     stage.classList.toggle('is-page-2', page === 2);
     stage.classList.toggle('is-page-3', page === 3);
-    stage.classList.toggle('is-page-4', page === 4);
     glyphScene.classList.add('is-rolling');
   }
 
@@ -325,8 +323,6 @@
       goToPage(2);
     } else if (event.code === 'Digit3' || event.code === 'Numpad3') {
       goToPage(3);
-    } else if (event.code === 'Digit4' || event.code === 'Numpad4') {
-      goToPage(4);
     }
   });
 
