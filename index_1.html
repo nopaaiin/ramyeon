@@ -44,14 +44,20 @@
     flex: 0 0 50%;
     width: 50%;
     height: 100%;
-    background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
-    opacity: 0.6;
+    background-size: 72% auto;
+    opacity: 0.3;
   }
 
-  .edge-decor-left { background-image: url('left.png'); }
-  .edge-decor-right { background-image: url('Right.png'); }
+  .edge-decor-left {
+    background-image: url('left.png');
+    background-position: left center;
+  }
+
+  .edge-decor-right {
+    background-image: url('Right.png');
+    background-position: right center;
+  }
 
   /* 무대: 2560x1440 비율을 유지하며 화면에 꽉 차게(레터박스) */
   #stage {
