@@ -30,6 +30,29 @@
     background: #000;   /* 화면 밖 여백은 검정 */
   }
 
+  /* 화면 최하단 장식: 정중앙을 경계로 좌우 이미지를 각각 cover */
+  #edge-decor {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .edge-decor-half {
+    flex: 0 0 50%;
+    width: 50%;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.6;
+  }
+
+  .edge-decor-left { background-image: url('left.png'); }
+  .edge-decor-right { background-image: url('Right.png'); }
+
   /* 무대: 2560x1440 비율을 유지하며 화면에 꽉 차게(레터박스) */
   #stage {
     position: absolute;
@@ -39,6 +62,7 @@
     height: 1440px;
     transform: translate(-50%, -50%) scale(var(--scale, 1));
     transform-origin: center center;
+    z-index: 1;
   }
 
   /* 배경 그래픽 (마름모 구멍 뚫린 web PNG) — 페이지별로 쌓인 레이어를 JS가 opacity로 전환 */
@@ -270,6 +294,10 @@
 </style>
 </head>
 <body>
+  <div id="edge-decor" aria-hidden="true">
+    <div class="edge-decor-half edge-decor-left"></div>
+    <div class="edge-decor-half edge-decor-right"></div>
+  </div>
   <div id="stage">
     <div id="bg-page-0" class="page-layer" style="background-image:url('pg1.png?v=2')"></div>
     <div id="bg-page-1" class="page-layer" style="background-image:url('pg2.png?v=1')"></div>
