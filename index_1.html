@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>麵道 · 0</title>
+<title>麵道 · 零</title>
 <style>
   /* ===== 확정 수치 (27인치 5K 아이맥 기준) =====
      화면 표시영역 : 2560 x 1440 (CSS px)
@@ -41,42 +41,23 @@
     transform-origin: center center;
   }
 
-  /* 배경 그래픽 (마름모 구멍 뚫린 web PNG) */
+  /* 배경 그래픽 (마름모 구멍 뚫린 web PNG) — 페이지별로 쌓인 레이어를 JS가 opacity로 전환 */
   .page-layer {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
-  }
-
-  #bg {
-    background: url('pg1.png?v=2') center / cover no-repeat;
-  }
-
-  #bg-next {
-    background: url('pg2.png?v=1') center / cover no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     opacity: 0;
     transition: opacity 650ms ease-in-out;
   }
 
-  #bg-third {
-    background: url('pg3.png?v=1') center / cover no-repeat;
-    opacity: 0;
-    transition: opacity 650ms ease-in-out;
-  }
+  #bg-page-0 { opacity: 1; } /* 맨 아래 기본 레이어(pg1.png)는 항상 표시 */
 
-  #bg-fourth {
-    background: url('pg4.png?v=1') center / cover no-repeat;
-    opacity: 0;
-    transition: opacity 650ms ease-in-out;
-  }
-
-  #stage.is-page-1 #bg-next,
-  #stage.is-page-2 #bg-next,
-  #stage.is-page-2 #bg-third,
-  #stage.is-page-3 #bg-next,
-  #stage.is-page-3 #bg-third,
-  #stage.is-page-3 #bg-fourth { opacity: 1; }
+  /* pg11.png만 좌우(가로축 기준) 반전 표시 */
+  .page-layer.flip-x { transform: scaleX(-1); }
 
   /* 검정 마름모 (실물 책 자리) — 정방형 회전 */
   #void {
@@ -125,17 +106,19 @@
     visibility: hidden;
   }
 
-  /* 0페이지: 한자 대신 보이드 안에 표시되는 이미지(태극) */
-  .glyph.is-image img {
+  /* 異端처럼 두 글자인 경우: 마름모 중앙에 세로로 쌓아 배치 */
+  .glyph.is-combo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .glyph.is-combo .glyph-char {
     display: block;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 640px;
-    height: 640px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 18px rgba(244,91,168,0.55)) drop-shadow(0 0 44px rgba(244,91,168,0.35));
+    font-size: 300px;
+    line-height: 1.05;
   }
 
   #glyph-scene.is-rolling .glyph { animation: none; }
@@ -209,7 +192,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .glyph { animation: none; opacity: 0.9; }
-    #bg-next, #bg-third, #bg-fourth { transition-duration: 180ms; }
+    .page-layer { transition-duration: 180ms; }
     #glyph-scene.is-rolling #glyph { animation: glyphOut 180ms ease both; }
     #glyph-scene.is-rolling #glyph-next { animation: glyphIn 180ms ease both; }
   }
@@ -217,14 +200,23 @@
 </head>
 <body>
   <div id="stage">
-    <div id="bg" class="page-layer"></div>
-    <div id="bg-next" class="page-layer"></div>
-    <div id="bg-third" class="page-layer"></div>
-    <div id="bg-fourth" class="page-layer"></div>
+    <div id="bg-page-0" class="page-layer" style="background-image:url('pg1.png?v=2')"></div>
+    <div id="bg-page-1" class="page-layer" style="background-image:url('pg2.png?v=1')"></div>
+    <div id="bg-page-2" class="page-layer" style="background-image:url('pg3.png?v=1')"></div>
+    <div id="bg-page-3" class="page-layer" style="background-image:url('pg4.png?v=1')"></div>
+    <div id="bg-page-4" class="page-layer" style="background-image:url('page5.png?v=1')"></div>
+    <div id="bg-page-5" class="page-layer" style="background-image:url('page6.png?v=1')"></div>
+    <div id="bg-page-6" class="page-layer" style="background-image:url('page7.png?v=1')"></div>
+    <div id="bg-page-7" class="page-layer" style="background-image:url('page8.png?v=1')"></div>
+    <div id="bg-page-8" class="page-layer" style="background-image:url('page9.png?v=1')"></div>
+    <div id="bg-page-9" class="page-layer" style="background-image:url('page10.png?v=1')"></div>
+    <div id="bg-page-10" class="page-layer flip-x" style="background-image:url('pg11.png?v=1')"></div>
+    <div id="bg-page-11" class="page-layer" style="background-image:url('page12.png?v=1')"></div>
+    <div id="bg-page-12" class="page-layer" style="background-image:url('page13.png?v=1')"></div>
     <div id="void"></div>
     <div id="glyph-scene">
-      <div id="glyph" class="glyph">一</div>
-      <div id="glyph-next" class="glyph">二</div>
+      <div id="glyph" class="glyph">零</div>
+      <div id="glyph-next" class="glyph">一</div>
     </div>
   </div>
 
@@ -234,49 +226,64 @@
   // ox: 좌우 보정 (양수 → 오른쪽)
   // oy: 상하 보정 (양수 → 아래)
   const OFFSETS = {
-    '一': { ox:  0, oy: 40 },  // ← 실측 후 조정
+    '零': { ox:  0, oy:  0 },  // ← 실측 후 조정
+    '一': { ox:  0, oy: 40 },
     '二': { ox:  0, oy: 20 },
     '三': { ox:  0, oy:  0 },
+    '四': { ox:  0, oy:  0 },
+    '五': { ox:  0, oy:  0 },
+    '六': { ox:  0, oy:  0 },
+    '七': { ox:  0, oy:  0 },
+    '八': { ox:  0, oy:  0 },
+    '異端': { ox: 0, oy: 0 },
   };
 
-  // 페이지별 보이드 콘텐츠: 0페이지(pg1.png)는 한자 대신 태극 이미지
+  // 페이지별 보이드 콘텐츠(마름모 안 한자)
   const PAGE_CONTENT = {
-    0: { type: 'image', src: 'yinandyang.png?v=1' },
-    1: { type: 'text',  char: '一' },
-    2: { type: 'text',  char: '二' },
-    3: { type: 'text',  char: '三' },
+    0:  { type: 'text', char: '零' },
+    1:  { type: 'text', char: '一' },
+    2:  { type: 'text', char: '二' },
+    3:  { type: 'text', char: '三' },
+    4:  { type: 'text', char: '四' },
+    5:  { type: 'text', char: '四' },
+    6:  { type: 'text', char: '五' },
+    7:  { type: 'text', char: '六' },
+    8:  { type: 'text', char: '七' },
+    9:  { type: 'text', char: '八' },
+    10: { type: 'text', char: '異端' },
+    11: { type: 'text', char: '異端' },
+    12: { type: 'text', char: '異端' },
   };
+  const LAST_PAGE = 12;
 
   function setGlyph(page, elementId = 'glyph') {
     const el = document.getElementById(elementId);
     const content = PAGE_CONTENT[page];
+    const isCombo = content.char.length > 1;
 
-    if (content.type === 'image') {
-      el.classList.add('is-image');
-      el.textContent = '';
-      el.style.setProperty('--ox', '0px');
-      el.style.setProperty('--oy', '0px');
-      let img = el.querySelector('img');
-      if (!img) {
-        img = document.createElement('img');
-        el.appendChild(img);
+    const { ox = 0, oy = 0 } = OFFSETS[content.char] ?? {};
+    el.style.setProperty('--ox', ox + 'px');
+    el.style.setProperty('--oy', oy + 'px');
+
+    el.classList.toggle('is-combo', isCombo);
+    if (isCombo) {
+      el.innerHTML = '';
+      for (const ch of content.char) {
+        const span = document.createElement('span');
+        span.className = 'glyph-char';
+        span.textContent = ch;
+        el.appendChild(span);
       }
-      img.src = content.src;
     } else {
-      el.classList.remove('is-image');
       el.textContent = content.char;
-      const { ox = 0, oy = 0 } = OFFSETS[content.char] ?? {};
-      el.style.setProperty('--ox', ox + 'px');
-      el.style.setProperty('--oy', oy + 'px');
     }
   }
 
   function titleGlyph(page) {
-    const content = PAGE_CONTENT[page];
-    return content.type === 'text' ? content.char : String(page);
+    return PAGE_CONTENT[page].char;
   }
 
-  // 초기 콘텐츠 세팅: 0페이지(태극)에서 시작
+  // 초기 콘텐츠 세팅: 0페이지(零)에서 시작
   setGlyph(0);
   setGlyph(1, 'glyph-next');
 
@@ -288,8 +295,24 @@
   let currentPage = 0;
   let targetPage = 0;
 
+  // 페이지별 배경 레이어(0번은 항상 켜져 있는 기본 레이어)
+  const bgLayers = [];
+  for (let i = 0; i <= LAST_PAGE; i++) {
+    bgLayers.push(document.getElementById('bg-page-' + i));
+  }
+
+  function updateBackgrounds(page) {
+    for (let i = 1; i <= LAST_PAGE; i++) {
+      bgLayers[i].style.opacity = i <= page ? '1' : '0';
+    }
+  }
+
   // 클릭 전에 다음 이미지들을 브라우저 캐시에 준비한다.
-  ['./pg1.png?v=2', './pg2.png?v=1', './pg3.png?v=1', './pg4.png?v=1', './yinandyang.png?v=1'].forEach((src) => {
+  [
+    './pg1.png?v=2', './pg2.png?v=1', './pg3.png?v=1', './pg4.png?v=1',
+    './page5.png?v=1', './page6.png?v=1', './page7.png?v=1', './page8.png?v=1',
+    './page9.png?v=1', './page10.png?v=1', './pg11.png?v=1', './page12.png?v=1', './page13.png?v=1',
+  ].forEach((src) => {
     const preload = new Image();
     preload.src = src;
   });
@@ -300,9 +323,7 @@
     isTransitioning = true;
     targetPage = page;
     setGlyph(page, 'glyph-next');
-    stage.classList.toggle('is-page-1', page === 1);
-    stage.classList.toggle('is-page-2', page === 2);
-    stage.classList.toggle('is-page-3', page === 3);
+    updateBackgrounds(page);
     glyphScene.classList.add('is-rolling');
   }
 
@@ -320,20 +341,18 @@
     'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
   ]);
 
+  // 숫자키 0~9로 해당 페이지(0~9)에 바로 이동. 10~12(異端)는 스페이스바로만 진입.
+  const DIGIT_PAGE_MAP = {};
+  for (let d = 0; d <= 9; d++) {
+    DIGIT_PAGE_MAP['Digit' + d] = d;
+    DIGIT_PAGE_MAP['Numpad' + d] = d;
+  }
+
   document.addEventListener('keydown', (event) => {
     if (event.repeat) return;
 
-    if (event.code === 'Digit0' || event.code === 'Numpad0') {
-      goToPage(0);
-      return;
-    } else if (event.code === 'Digit1' || event.code === 'Numpad1') {
-      goToPage(1);
-      return;
-    } else if (event.code === 'Digit2' || event.code === 'Numpad2') {
-      goToPage(2);
-      return;
-    } else if (event.code === 'Digit3' || event.code === 'Numpad3') {
-      goToPage(3);
+    if (event.code in DIGIT_PAGE_MAP) {
+      goToPage(DIGIT_PAGE_MAP[event.code]);
       return;
     }
 
