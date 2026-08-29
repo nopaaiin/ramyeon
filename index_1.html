@@ -49,9 +49,9 @@
     height: 100%;
     background-repeat: no-repeat;
     background-size: contain;
-    opacity: 0.3;
+    opacity: 0.6;
     will-change: opacity;
-    animation: edgeIdle 9s ease-in-out infinite;
+    animation: edgeIdle 7s ease-in-out infinite;
   }
 
   .edge-decor-left {
@@ -187,11 +187,10 @@
     animation: glyphIn 760ms cubic-bezier(0.55, 0.05, 0.45, 0.95) both;
   }
 
-  /* 좌우 배경 장식(left.png/Right.png) 아이들링: 기본 30% 불투명도를 유지하며
-     아주 느리고 은은하게 밝기가 오르내림 */
+  /* 좌우 배경 장식(left.png/Right.png) 아이들링: 45%~70% 사이를 느리게 왕복하며 숨쉬는 느낌 */
   @keyframes edgeIdle {
-    0%, 100% { opacity: 0.3; }
-    50%      { opacity: 0.4; }
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 0.70; }
   }
 
   @keyframes idle {
@@ -298,15 +297,15 @@
     }
   }
 
-  /* 0페이지(표지) 조작 유도 문구 */
+  /* 0페이지(표지) 조작 유도 문구: 마름모 밑, 화면 중앙보다 아래 / 하단 여백보다 위 */
   #cover-hint {
     position: absolute;
     left: 50%;
-    bottom: 96px;
+    bottom: 300px;
     transform: translateX(-50%);
     display: flex;
     align-items: baseline;
-    gap: 16px;
+    gap: 22px;
     z-index: 2;
     opacity: 0.55;
     pointer-events: none;
@@ -321,7 +320,7 @@
   #cover-hint .hint-en {
     font-family: 'EB Garamond', Georgia, 'Times New Roman', Times, serif;
     font-style: italic;
-    font-size: 28px;
+    font-size: 42px;
     letter-spacing: 0.05em;
     color: var(--pink-soft);
     white-space: nowrap;
@@ -329,7 +328,7 @@
 
   #cover-hint .hint-cn {
     font-family: "Kaiti SC", serif;
-    font-size: 32px;
+    font-size: 52px;
     letter-spacing: 0.12em;
     color: var(--pink);
   }
@@ -338,7 +337,7 @@
     .glyph { animation: none; opacity: 0.9; }
     .glyph.is-image img { animation: none; }
     .page-layer { transition-duration: 180ms; }
-    .edge-decor-half { animation: none; opacity: 0.3; }
+    .edge-decor-half { animation: none; opacity: 0.6; }
     #glyph-scene.is-rolling #glyph { animation: glyphOut 180ms ease both; }
     #glyph-scene.is-rolling #glyph-next { animation: glyphIn 180ms ease both; }
     #glyph-scene.is-rolling #glyph.is-image img { animation: glyphOutGlow 180ms ease both; }
