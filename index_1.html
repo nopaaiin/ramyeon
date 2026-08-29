@@ -5,6 +5,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>麵道 · 0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
 <style>
   /* ===== 확정 수치 (27인치 5K 아이맥 기준) =====
      화면 표시영역 : 2560 x 1440 (CSS px)
@@ -47,6 +50,8 @@
     background-repeat: no-repeat;
     background-size: contain;
     opacity: 0.3;
+    will-change: opacity;
+    animation: edgeIdle 9s ease-in-out infinite;
   }
 
   .edge-decor-left {
@@ -57,6 +62,7 @@
   .edge-decor-right {
     background-image: url('Right.png');
     background-position: right center;
+    animation-delay: -4.5s; /* 좌우가 서로 어긋나게 맥동 */
   }
 
   /* 무대: 2560x1440 비율을 유지하며 화면에 꽉 차게(레터박스) */
@@ -181,6 +187,13 @@
     animation: glyphIn 760ms cubic-bezier(0.55, 0.05, 0.45, 0.95) both;
   }
 
+  /* 좌우 배경 장식(left.png/Right.png) 아이들링: 기본 30% 불투명도를 유지하며
+     아주 느리고 은은하게 밝기가 오르내림 */
+  @keyframes edgeIdle {
+    0%, 100% { opacity: 0.3; }
+    50%      { opacity: 0.4; }
+  }
+
   @keyframes idle {
     0%, 100% {
       opacity: 0.72;
@@ -285,10 +298,47 @@
     }
   }
 
+  /* 0페이지(표지) 조작 유도 문구 */
+  #cover-hint {
+    position: absolute;
+    left: 50%;
+    bottom: 96px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    z-index: 2;
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+    transition: opacity 650ms ease-in-out;
+  }
+
+  #cover-hint.is-hidden {
+    opacity: 0;
+  }
+
+  #cover-hint .hint-en {
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', Times, serif;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: 0.05em;
+    color: var(--pink-soft);
+    white-space: nowrap;
+  }
+
+  #cover-hint .hint-cn {
+    font-family: "Kaiti SC", serif;
+    font-size: 32px;
+    letter-spacing: 0.12em;
+    color: var(--pink);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .glyph { animation: none; opacity: 0.9; }
     .glyph.is-image img { animation: none; }
     .page-layer { transition-duration: 180ms; }
+    .edge-decor-half { animation: none; opacity: 0.3; }
     #glyph-scene.is-rolling #glyph { animation: glyphOut 180ms ease both; }
     #glyph-scene.is-rolling #glyph-next { animation: glyphIn 180ms ease both; }
     #glyph-scene.is-rolling #glyph.is-image img { animation: glyphOutGlow 180ms ease both; }
@@ -319,6 +369,10 @@
     <div id="glyph-scene">
       <div id="glyph" class="glyph"></div>
       <div id="glyph-next" class="glyph">一</div>
+    </div>
+    <div id="cover-hint">
+      <span class="hint-en">press spacebar to</span>
+      <span class="hint-cn">麵道</span>
     </div>
   </div>
 
@@ -433,6 +487,13 @@
     preload.src = src;
   });
 
+  // 0페이지(표지) 조작 유도 문구: 0페이지에서만 표시, 다른 페이지로 넘어가면 사라짐
+  const coverHint = document.getElementById('cover-hint');
+  function updateCoverHint(page) {
+    coverHint.classList.toggle('is-hidden', page !== 0);
+  }
+  updateCoverHint(0);
+
   function goToPage(page) {
     if (isTransitioning || page === currentPage || !PAGE_CONTENT[page]) return;
 
@@ -440,6 +501,7 @@
     targetPage = page;
     setGlyph(page, 'glyph-next');
     updateBackgrounds(page);
+    updateCoverHint(page);
     glyphScene.classList.add('is-rolling');
   }
 
@@ -464,8 +526,19 @@
     DIGIT_PAGE_MAP['Numpad' + d] = d;
   }
 
+  // ── 0페이지 자동 복귀(스크린세이버): 마지막 스페이스바 입력 후 2분 경과 시 표지로 리셋 ──
+  const IDLE_RESET_MS = 2 * 60 * 1000;
+  let idleResetTimer = null;
+  function scheduleIdleReset() {
+    clearTimeout(idleResetTimer);
+    idleResetTimer = setTimeout(() => goToPage(0), IDLE_RESET_MS);
+  }
+  scheduleIdleReset();
+
   document.addEventListener('keydown', (event) => {
     if (event.repeat) return;
+
+    if (event.code === 'Space') scheduleIdleReset();
 
     if (event.code in DIGIT_PAGE_MAP) {
       goToPage(DIGIT_PAGE_MAP[event.code]);
