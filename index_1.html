@@ -50,7 +50,7 @@
     background-repeat: no-repeat;
     background-size: contain;
     opacity: 0.6;
-    will-change: opacity;
+    will-change: opacity, transform;
     animation: edgeIdle 7s ease-in-out infinite;
   }
 
@@ -187,10 +187,16 @@
     animation: glyphIn 760ms cubic-bezier(0.55, 0.05, 0.45, 0.95) both;
   }
 
-  /* 좌우 배경 장식(left.png/Right.png) 아이들링: 45%~70% 사이를 느리게 왕복하며 숨쉬는 느낌 */
+  /* 좌우 배경 장식(left.png/Right.png): 밝기와 상하 움직임을 함께 주는 호흡 아이들링 */
   @keyframes edgeIdle {
-    0%, 100% { opacity: 0.45; }
-    50%      { opacity: 0.70; }
+    0%, 100% {
+      opacity: 0.45;
+      transform: translateY(8px);
+    }
+    50% {
+      opacity: 0.70;
+      transform: translateY(-8px);
+    }
   }
 
   @keyframes idle {
